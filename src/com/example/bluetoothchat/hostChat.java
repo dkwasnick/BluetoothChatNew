@@ -48,7 +48,7 @@ public class hostChat extends Activity {
 	        BluetoothServerSocket tmp = null;
 	        try {
 	            // MY_UUID is the app's UUID string, also used by the client code
-	            tmp = mBluetoothAdapter.listenUsingRfcommWithServiceRecord("Bluetooth Chat", UUID.nameUUIDFromBytes(username.getBytes()));
+	            tmp = mBluetoothAdapter.listenUsingRfcommWithServiceRecord("Bluetooth Chat", UUID.fromString("f820b940-a4ef-11e3-a5e2-0800200c9a66"));
 	        } catch (IOException e) { }
 	        mmServerSocket = tmp;
 	    }

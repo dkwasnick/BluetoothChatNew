@@ -71,11 +71,13 @@ public class joinChat extends Activity {
 	        // because mmSocket is final
 	        BluetoothSocket tmp = null;
 	        mmDevice = device;
-	 
+	        
+	        System.out.println("DEVICE NAME = "+device.getName());
+	        
 	        // Get a BluetoothSocket to connect with the given BluetoothDevice
 	        try {
 	            // MY_UUID is the app's UUID string, also used by the server code
-	            tmp = device.createRfcommSocketToServiceRecord(UUID.nameUUIDFromBytes(roomName.getText().toString().getBytes()));
+	            tmp = device.createRfcommSocketToServiceRecord(UUID.fromString("f820b940-a4ef-11e3-a5e2-0800200c9a66"));
 	        } catch (IOException e) { }
 	        mmSocket = tmp;
 	    }
