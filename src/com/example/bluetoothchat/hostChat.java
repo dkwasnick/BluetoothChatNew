@@ -18,7 +18,7 @@ import android.widget.EditText;
 
 public class hostChat extends Activity {
 	
-	AcceptThread acceptor = new AcceptThread();
+	AcceptThread acceptor;
 	ArrayList<BluetoothServerSocket> sockets = new ArrayList<BluetoothServerSocket>();
 	Context context;
 	String username;
@@ -29,10 +29,11 @@ public class hostChat extends Activity {
         setContentView(R.layout.activity_host);
         
         
-        username = getIntent().getExtras().getString("un");
-        context = this;
+        //username = getIntent().getExtras().getString("un");
+        //context = this;
         
-        acceptor.run();
+        //acceptor = new AcceptThread();
+        //acceptor.run();
         
         
         
@@ -79,7 +80,7 @@ public class hostChat extends Activity {
 	
 	private void manageConnectedSocket(BluetoothSocket socket)
 	{
-		
+		System.out.println("accepted socket! woo");
 		
 		
 		

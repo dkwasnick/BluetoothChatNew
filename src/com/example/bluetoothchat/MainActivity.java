@@ -27,7 +27,7 @@ public class MainActivity extends Activity {
 			
 			@Override
 			public void onClick(View arg0) {
-				Intent i = new Intent(context, createChat.class);
+				Intent i = new Intent(context, hostChat.class);
 				startActivity(i);
 			}
 		});

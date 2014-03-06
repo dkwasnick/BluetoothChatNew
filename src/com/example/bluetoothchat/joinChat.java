@@ -15,6 +15,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -107,36 +108,12 @@ public class joinChat extends Activity {
 	    }
 	}
 	
-	private void findConnections()
-	{
-		// Create a BroadcastReceiver for ACTION_FOUND
-		final BroadcastReceiver mReceiver = new BroadcastReceiver() {
-			@Override
-			public void onReceive(Context context, Intent intent) {
-				String action = intent.getAction();
-		        // When discovery finds a device
-		        if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-		            // Get the BluetoothDevice object from the Intent
-		            BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-		            // Add the name and address to an array adapter to show in a ListView
-		            devices.add(device);
-		            devicesNames.add(device.getName()+"\n"+device.getAddress());
-		            ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, devicesNames);
-		            listView.setAdapter(adapter);
-		            //mArrayAdapter.add(device.getName() + "\n" + device.getAddress());
-		        }
-				
-			}
-		};
-		// Register the BroadcastReceiver
-		IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-		registerReceiver(mReceiver, filter); // Don't forget to unregister during onDestroy
-	}
+	
 	
 	private void getPairedDevices()
 	{
 		BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-		Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+		final Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
 		// If there are paired devices
 		
 
@@ -150,13 +127,32 @@ public class joinChat extends Activity {
 		    }
 		    ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, names );
             listView.setAdapter(adapter);
+            
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+            		{
+
+						@Override
+						public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3)
+						{
+							BluetoothDevice dev = (BluetoothDevice) pairedDevices.toArray()[arg2];
+							connectTo(dev);
+							
+						}
+            	
+            		});
 		    
 		}
 	}
 	
+	private void connectTo(BluetoothDevice device)
+	{
+		ConnectThread ct = new ConnectThread(device);
+		ct.run();
+	}
+	
 	private void manageConnectedSocket(BluetoothSocket socket)
 	{
-		
+		System.out.println("socket connected and managed woo");
 	}
 	
 }
