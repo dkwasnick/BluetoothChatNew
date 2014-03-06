@@ -54,8 +54,8 @@ public class joinChat extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				connectThread = new ConnectThread(null);
-				connectThread.run();
+				//connectThread = new ConnectThread(null);
+				//connectThread.run();
 			}
 		});
 	}
@@ -78,7 +78,10 @@ public class joinChat extends Activity {
 	        try {
 	            // MY_UUID is the app's UUID string, also used by the server code
 	            tmp = device.createRfcommSocketToServiceRecord(UUID.fromString("f820b940-a4ef-11e3-a5e2-0800200c9a66"));
-	        } catch (IOException e) { }
+	        } catch (IOException e) { 
+	        	System.out.println("Could not create rf comm socket connection");
+	        	e.printStackTrace();
+	        }
 	        mmSocket = tmp;
 	    }
 	 
@@ -92,6 +95,7 @@ public class joinChat extends Activity {
 	            mmSocket.connect();
 	        } catch (IOException connectException) {
 	            // Unable to connect; close the socket and get out
+	        	connectException.printStackTrace();
 	            try {
 	                mmSocket.close();
 	            } catch (IOException closeException) { }

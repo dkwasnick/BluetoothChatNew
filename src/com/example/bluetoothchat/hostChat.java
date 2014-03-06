@@ -40,9 +40,15 @@ public class hostChat extends Activity {
 	}
 
 	private class AcceptThread extends Thread {
+		
+		
+		
 	    private final BluetoothServerSocket mmServerSocket;
 	    private BluetoothAdapter mBluetoothAdapter;
 	    public AcceptThread() {
+	    	
+	    	BluetoothAdapter ba = BluetoothAdapter.getDefaultAdapter();
+			ba.cancelDiscovery();
 	        // Use a temporary object that is later assigned to mmServerSocket,
 	        // because mmServerSocket is final
 	        BluetoothServerSocket tmp = null;
