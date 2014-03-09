@@ -33,6 +33,7 @@ public class joinChat extends Activity {
 	ListView listView;
 	ArrayList<BluetoothDevice> devices = new ArrayList<BluetoothDevice>();
 	ArrayList<String> devicesNames = new ArrayList<String>();
+	String username = null;
 	String myName = "Unnamed";
 	
 	
@@ -51,6 +52,7 @@ public class joinChat extends Activity {
         
         context = this;
        
+        username = getIntent().getStringExtra("un");
         
         
         listView = (ListView) findViewById(R.id.listView1);
@@ -73,13 +75,17 @@ public class joinChat extends Activity {
 	        mmDevice = device;
 	        
 	        myName = mBluetoothAdapter.getName();
+	        if (username != "")
+	        {
+	        	myName = username;
+	        }
 	        
 	        // Get a BluetoothSocket to connect with the given BluetoothDevice
 	        try {
 	            // MY_UUID is the app's UUID string, also used by the server code
 	            tmp = device.createRfcommSocketToServiceRecord(UUID.fromString("f820b940-a4ef-11e3-a5e2-0800200c9a66"));
 	        } catch (IOException e) { 
-	        	System.out.println("Could not create rf comm socket connection");
+	        	System.out.println("BTCHAT: Could not create rf comm socket connection");
 	        	e.printStackTrace();
 	        }
 	        mmSocket = tmp;
@@ -161,7 +167,7 @@ public class joinChat extends Activity {
 	{
 		
 		serverSocket = socket;
-		System.out.println("socket connected and managed woo");
+		System.out.println("BTCHAT: socket connected and managed woo");
 		
 		setContentView(R.layout.activity_chat);
 		mainChat = (TextView) findViewById(R.id.textView1);
@@ -180,6 +186,7 @@ public class joinChat extends Activity {
 			@Override
 			public void onClick(View v) {
 				String msg = myName+": "+input.getText().toString();
+				input.setText("");
 				mainChat.setText(mainChat.getText().toString()+"\n"+msg);
 				connectedThread.write(msg.getBytes());		
 			}
@@ -225,7 +232,7 @@ private class ConnectedThread extends Thread {
 	                // Send the obtained bytes to the UI activity
 	                //mHandler.obtainMessage(MESSAGE_READ, bytes, -1, buffer).sendToTarget();
 	                
-	                System.out.println("reading "+bytes+" bytes");
+	                System.out.println("BTCHAT: BTCHAT: reading "+bytes+" bytes");
 	                
 	                Runnable r = new Runnable() {
 	                	public void run()
@@ -269,7 +276,7 @@ private class ConnectedThread extends Thread {
 	
 	private void addToChat(byte[] buffer)
 	{
-		//System.out.println("Adding "+buffer+" to chat");
+		//System.out.println("BTCHAT: Adding "+buffer+" to chat");
 		String str = "";
 		try {
 			str = new String(buffer, "UTF-8");

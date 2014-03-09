@@ -28,11 +28,11 @@ public class hostChat extends Activity {
 	ArrayList<BluetoothSocket> sockets = new ArrayList<BluetoothSocket>();
 	ArrayList<ConnectedThread> connections = new ArrayList<ConnectedThread>();
 	Context context;
-	String username;
 	TextView mainChat;
 	Button button;
 	EditText input;
 	
+	String username = null;
 	String myName = "Unnamed";
 	
 	
@@ -52,6 +52,8 @@ public class hostChat extends Activity {
         acceptor = new AcceptThread();
         acceptor.start();
         
+        username = getIntent().getStringExtra("un");
+        
         
         
         button.setOnClickListener(new View.OnClickListener() {
@@ -59,6 +61,7 @@ public class hostChat extends Activity {
 			@Override
 			public void onClick(View v) {
 				String msg = myName+": "+input.getText().toString();
+				input.setText("");
 				mainChat.setText(mainChat.getText().toString()+"\n"+msg);
 				for (ConnectedThread ct : connections)
 				{
@@ -79,10 +82,13 @@ public class hostChat extends Activity {
 	    private final BluetoothServerSocket mmServerSocket;
 	    private BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 	    public AcceptThread() {
-	    	System.out.println("AcceptThread was called");
+	    	System.out.println("BTCHAT: AcceptThread was called");
 	    	
 	    	myName = mBluetoothAdapter.getName();
-	    	
+	    	if (username != "")
+	        {
+	        	myName = username;
+	        }
 	        // Use a temporary object that is later assigned to mmServerSocket,
 	        // because mmServerSocket is final
 	        BluetoothServerSocket tmp = null;
@@ -96,15 +102,15 @@ public class hostChat extends Activity {
 	    }
 	 
 	    public void run() {
-	    	System.out.println("running...");
+	    	System.out.println("BTCHAT: running...");
 	        BluetoothSocket socket = null;
 	        // Keep listening until exception occurs or a socket is returned
 	        while (true) {
 	            try {
 	                socket = mmServerSocket.accept();
-	                System.out.println("accepted connection!");
+	                System.out.println("BTCHAT: accepted connection!");
 	            } catch (IOException e) {
-	            	System.out.println("socket could not accept");
+	            	System.out.println("BTCHAT: socket could not accept");
 	            	e.printStackTrace();
 	                break;
 	            }
@@ -126,7 +132,7 @@ public class hostChat extends Activity {
 	
 	private void manageConnectedSocket(BluetoothSocket socket)
 	{
-		System.out.println("accepted socket! woo");
+		System.out.println("BTCHAT: accepted socket! woo");
 		sockets.add(socket);
 		
 		final ConnectedThread ct = new ConnectedThread(socket);
@@ -176,6 +182,7 @@ public class hostChat extends Activity {
 	                // Read from the InputStream
 	                bytes = mmInStream.read(buffer);
 	                
+	                System.out.println("BTCHAT: reading "+bytes+" bytes");
 	                
 	                
 	                Runnable r = new Runnable() {

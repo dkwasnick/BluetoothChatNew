@@ -8,12 +8,14 @@ import android.content.Intent;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 public class MainActivity extends Activity {
 
 	private static final int REQUEST_BT = 1000;
 	Context context;
 	Button create,join;
+	EditText un;
 	boolean btEnabled = false;
 	
     @Override
@@ -25,6 +27,7 @@ public class MainActivity extends Activity {
         context = this;
         create = (Button) findViewById(R.id.createButton);
         join = (Button) findViewById(R.id.joinButton);
+        un = (EditText) findViewById(R.id.editText1);
         
         enableBt();
         
@@ -36,6 +39,7 @@ public class MainActivity extends Activity {
 				if (btEnabled)
 				{
 					Intent i = new Intent(context, hostChat.class);
+					i.putExtra("un", un.getText().toString());
 					startActivity(i);
 				}else{
 					enableBt();
@@ -52,6 +56,7 @@ public class MainActivity extends Activity {
 				if (btEnabled)
 				{
 					Intent i = new Intent(context, joinChat.class);
+					i.putExtra("un", un.getText().toString());
 					startActivity(i);
 				}else{
 					enableBt();
