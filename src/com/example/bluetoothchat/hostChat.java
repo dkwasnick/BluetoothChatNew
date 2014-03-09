@@ -60,9 +60,10 @@ public class hostChat extends Activity {
 			
 			@Override
 			public void onClick(View v) {
+				String msg = myName+": "+input.getText().toString();
+				mainChat.setText(mainChat.getText().toString()+"\n"+msg);
 				for (ConnectedThread ct : connections)
 				{
-					String msg = myName+": "+input.getText().toString();
 					ct.write(msg.getBytes());
 				}
 				

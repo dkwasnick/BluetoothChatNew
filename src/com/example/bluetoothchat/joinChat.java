@@ -180,6 +180,7 @@ public class joinChat extends Activity {
 			@Override
 			public void onClick(View v) {
 				String msg = myName+": "+input.getText().toString();
+				mainChat.setText(mainChat.getText().toString()+"\n"+msg);
 				connectedThread.write(msg.getBytes());		
 			}
 		});
@@ -192,7 +193,7 @@ private class ConnectedThread extends Thread {
 		private final BluetoothSocket mmSocket;
 	    private final InputStream mmInStream;
 	    private final OutputStream mmOutStream;
-	    Handler mHandler = new Handler(Looper.getMainLooper());
+	    
 	 
 	    public ConnectedThread(BluetoothSocket socket) {
 	        mmSocket = socket;
