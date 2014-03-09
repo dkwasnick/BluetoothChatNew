@@ -44,8 +44,6 @@ public class hostChat extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         
-        
-        //username = getIntent().getExtras().getString("un");
         context = this;
         mainChat = (TextView) findViewById(R.id.textView1);
         button = (Button) findViewById(R.id.button1);
@@ -149,7 +147,6 @@ public class hostChat extends Activity {
 		private final BluetoothSocket mmSocket;
 	    private final InputStream mmInStream;
 	    private final OutputStream mmOutStream;
-	    Handler mHandler = new Handler(Looper.getMainLooper());
 	 
 	    public ConnectedThread(BluetoothSocket socket) {
 	        mmSocket = socket;
@@ -235,7 +232,6 @@ public class hostChat extends Activity {
 	
 	private void addToChat(byte[] buffer)
 	{
-		//System.out.println("Adding "+buffer+" to chat");
 		String str = "";
 		try {
 			str = new String(buffer, "UTF-8");

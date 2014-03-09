@@ -21,6 +21,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
+        
         context = this;
         create = (Button) findViewById(R.id.createButton);
         join = (Button) findViewById(R.id.joinButton);
