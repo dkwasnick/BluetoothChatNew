@@ -53,7 +53,10 @@ public class hostChat extends Activity {
         acceptor.start();
         
         username = getIntent().getStringExtra("un");
-        
+        if (username != "")
+        {
+        	myName = username;
+        }
         
         
         button.setOnClickListener(new View.OnClickListener() {
