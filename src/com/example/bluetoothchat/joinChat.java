@@ -180,6 +180,9 @@ public class joinChat extends Activity {
 		connectedThread = new ConnectedThread(serverSocket);
 		connectedThread.start();
 		
+		String joinMsg = myName+" has joined the chat";
+		connectedThread.write(joinMsg.getBytes());
+		
 		
 		button.setOnClickListener(new View.OnClickListener() {
 			
