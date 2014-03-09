@@ -33,6 +33,8 @@ public class hostChat extends Activity {
 	Button button;
 	EditText input;
 	
+	String myName = "Unnamed";
+	
 	
 	
 	
@@ -60,7 +62,8 @@ public class hostChat extends Activity {
 			public void onClick(View v) {
 				for (ConnectedThread ct : connections)
 				{
-					ct.write(input.getText().toString().getBytes());
+					String msg = myName+": "+input.getText().toString();
+					ct.write(msg.getBytes());
 				}
 				
 			}
@@ -78,7 +81,9 @@ public class hostChat extends Activity {
 	    private BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 	    public AcceptThread() {
 	    	System.out.println("AcceptThread was called");
-
+	    	
+	    	myName = mBluetoothAdapter.getName();
+	    	
 	        // Use a temporary object that is later assigned to mmServerSocket,
 	        // because mmServerSocket is final
 	        BluetoothServerSocket tmp = null;
@@ -172,11 +177,6 @@ public class hostChat extends Activity {
 	            try {
 	                // Read from the InputStream
 	                bytes = mmInStream.read(buffer);
-	                // Send the obtained bytes to the UI activity
-	                //mHandler.obtainMessage(MESSAGE_READ, bytes, -1, buffer).sendToTarget();
-	                
-	                System.out.println("reading "+bytes+" bytes");
-	                
 	                
 	                
 	                

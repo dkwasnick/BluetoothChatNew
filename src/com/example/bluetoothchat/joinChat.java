@@ -33,6 +33,7 @@ public class joinChat extends Activity {
 	ListView listView;
 	ArrayList<BluetoothDevice> devices = new ArrayList<BluetoothDevice>();
 	ArrayList<String> devicesNames = new ArrayList<String>();
+	String myName = "Unnamed";
 	
 	
 	TextView mainChat;
@@ -71,7 +72,7 @@ public class joinChat extends Activity {
 	        BluetoothSocket tmp = null;
 	        mmDevice = device;
 	        
-	        System.out.println("DEVICE NAME = "+device.getName());
+	        myName = mBluetoothAdapter.getName();
 	        
 	        // Get a BluetoothSocket to connect with the given BluetoothDevice
 	        try {
@@ -178,8 +179,8 @@ public class joinChat extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				System.out.println("sending "+input.getText().toString());
-				connectedThread.write(input.getText().toString().getBytes());		
+				String msg = myName+": "+input.getText().toString();
+				connectedThread.write(msg.getBytes());		
 			}
 		});
 		
