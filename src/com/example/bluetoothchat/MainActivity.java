@@ -11,8 +11,7 @@ import android.widget.Button;
 
 public class MainActivity extends Activity {
 
-	private static final int REQUEST_BT_HOST = 999;
-	private static final int REQUEST_BT_JOIN = 1000;
+	private static final int REQUEST_BT = 1000;
 	Context context;
 	Button create,join;
 	boolean btEnabled = false;
@@ -26,12 +25,21 @@ public class MainActivity extends Activity {
         create = (Button) findViewById(R.id.createButton);
         join = (Button) findViewById(R.id.joinButton);
         
+        enableBt();
         
         create.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View arg0) {
-				enableBtHost();
+				
+				if (btEnabled)
+				{
+					Intent i = new Intent(context, hostChat.class);
+					startActivity(i);
+				}else{
+					enableBt();
+				}
+				
 				
 			}
 		});
@@ -40,15 +48,21 @@ public class MainActivity extends Activity {
 			
 			@Override
 			public void onClick(View arg0) {
-				enableBtJoin();
-				
+				if (btEnabled)
+				{
+					Intent i = new Intent(context, joinChat.class);
+					startActivity(i);
+				}else{
+					enableBt();
+				}
+			
 			}
 		});
         
     }
 
 
-    private void enableBtHost()
+    private void enableBt()
 	{
 		BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 		if (mBluetoothAdapter == null) {
@@ -59,44 +73,22 @@ public class MainActivity extends Activity {
 		
 		if (!mBluetoothAdapter.isEnabled()) {
 		    Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-		    startActivityForResult(enableBtIntent, REQUEST_BT_HOST);
-		}
-	}
-    
-    private void enableBtJoin()
-	{
-		BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-		if (mBluetoothAdapter == null) {
-		    // Device does not support Bluetooth
-			return;
-		}
-		
-		
-		if (!mBluetoothAdapter.isEnabled()) {
-		    Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-		    startActivityForResult(enableBtIntent, REQUEST_BT_JOIN);
+		    startActivityForResult(enableBtIntent, REQUEST_BT);
+		}else{
+			btEnabled = true;
 		}
 	}
 	
 	
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
-		if (requestCode == REQUEST_BT_HOST)
+		if (requestCode == REQUEST_BT)
 		{
 			if (resultCode == Activity.RESULT_OK)
 			{
-				Intent i = new Intent(context, hostChat.class);
-				startActivity(i);
-			}
-		}else if (requestCode == REQUEST_BT_JOIN)
-		{
-			if (resultCode == Activity.RESULT_OK)
-			{
-				Intent i = new Intent(context, joinChat.class);
-				startActivity(i);
+				btEnabled = true;
 			}
 		}
-	}
 	
-    
+	}
 }
