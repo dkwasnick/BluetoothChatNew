@@ -237,15 +237,19 @@ private class ConnectedThread extends Thread {
 	                
 	                System.out.println("BTCHAT: BTCHAT: reading "+bytes+" bytes");
 	                
+	                
+	                final byte[] bufferCopy =  buffer.clone();
+	                
 	                Runnable r = new Runnable() {
 	                	public void run()
 	                	{
-	                		addToChat(buffer);
+	                		addToChat(bufferCopy);
 	                	}
 	                };
 	                
 	                runOnUiThread(r);
 	                
+	                clearBuffer(buffer, 1024);
 	              
 	                
 	                
@@ -275,6 +279,14 @@ private class ConnectedThread extends Thread {
 	        	e.printStackTrace();
 	        }
 	    }
+	}
+
+	private void clearBuffer(byte[] buffer, int n)
+	{
+		for (int i=0; i<n; i++)
+		{
+			buffer[i] = 0;
+		}
 	}
 	
 	private void addToChat(byte[] buffer)

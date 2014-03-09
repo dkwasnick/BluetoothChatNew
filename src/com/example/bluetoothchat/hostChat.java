@@ -187,18 +187,22 @@ public class hostChat extends Activity {
 	                
 	                System.out.println("BTCHAT: reading "+bytes+" bytes");
 	                
+	                final byte[] bufferCopy =  buffer.clone();
+	                
+	                
+	                
 	                
 	                Runnable r = new Runnable() {
 	                	public void run()
 	                	{
-	                		addToChat(buffer);
+	                		addToChat(bufferCopy);
 	                		
 	                	}
 	                };
 	                
 	                runOnUiThread(r);
-	                forwardMessage(buffer, this);
-	              
+	                forwardMessage(bufferCopy, this);
+	                clearBuffer(buffer, 1024);
 	                
 	                
 	                
@@ -250,6 +254,14 @@ public class hostChat extends Activity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}	
+	}
+	
+	private void clearBuffer(byte[] buffer, int n)
+	{
+		for (int i=0; i<n; i++)
+		{
+			buffer[i] = 0;
+		}
 	}
 	
 }
