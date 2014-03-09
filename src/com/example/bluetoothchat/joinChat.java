@@ -68,6 +68,8 @@ public class joinChat extends Activity {
 	{
 		String msg = myName+" has left the chat";
 		connectedThread.write(msg.getBytes());
+		
+		super.onDestroy();
 	}
 	
 	private class ConnectThread extends Thread {

@@ -53,7 +53,7 @@ public class hostChat extends Activity {
         acceptor.start();
         
         username = getIntent().getStringExtra("un");
-        if (username.length() > 0)
+        if (username != null)
         {
         	myName = username;
         }
