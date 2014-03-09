@@ -63,6 +63,13 @@ public class joinChat extends Activity {
 	}
 	
 	
+	@Override
+	protected void onDestroy()
+	{
+		String msg = myName+" has left the chat";
+		connectedThread.write(msg.getBytes());
+	}
+	
 	private class ConnectThread extends Thread {
 	    private final BluetoothSocket mmSocket;
 	    private final BluetoothDevice mmDevice;

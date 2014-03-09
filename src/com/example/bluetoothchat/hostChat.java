@@ -53,7 +53,7 @@ public class hostChat extends Activity {
         acceptor.start();
         
         username = getIntent().getStringExtra("un");
-        if (username != "")
+        if (username.length() > 0)
         {
         	myName = username;
         }
@@ -207,7 +207,8 @@ public class hostChat extends Activity {
 	                
 	                
 	                
-	            } catch (IOException e) {
+	            } catch (Exception e) {
+	            	System.out.println("BTCHAT: Exception in reading");
 	            	e.printStackTrace();
 	                break;
 	            }
