@@ -2,6 +2,7 @@ package com.example.bluetoothchat;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.view.Menu;
@@ -10,6 +11,7 @@ import android.widget.Button;
 
 public class MainActivity extends Activity {
 
+	private static final int REQUEST_BT = 999;
 	Context context;
 	Button create,join;
 	
@@ -23,32 +25,54 @@ public class MainActivity extends Activity {
         create = (Button) findViewById(R.id.createButton);
         join = (Button) findViewById(R.id.joinButton);
         
-        create.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View arg0) {
-				Intent i = new Intent(context, hostChat.class);
-				startActivity(i);
-			}
-		});
         
-        join.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View arg0) {
-				Intent i = new Intent(context, joinChat.class);
-				startActivity(i);
-			}
-		});
-        
+        enableBt();
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
+    private void enableBt()
+	{
+		BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+		if (mBluetoothAdapter == null) {
+		    // Device does not support Bluetooth
+			return;
+		}
+		
+		
+		if (!mBluetoothAdapter.isEnabled()) {
+		    Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+		    startActivityForResult(enableBtIntent, REQUEST_BT);
+		}
+	}
+	
+	
+	protected void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+		if (requestCode == REQUEST_BT)
+		{
+			if (resultCode == Activity.RESULT_OK)
+			{
+				create.setOnClickListener(new View.OnClickListener() {
+					
+					@Override
+					public void onClick(View arg0) {
+						Intent i = new Intent(context, hostChat.class);
+						startActivity(i);
+					}
+				});
+		        
+		        join.setOnClickListener(new View.OnClickListener() {
+					
+					@Override
+					public void onClick(View arg0) {
+						Intent i = new Intent(context, joinChat.class);
+						startActivity(i);
+					}
+				});
+				
+			}
+		}
+	}
+	
     
 }
