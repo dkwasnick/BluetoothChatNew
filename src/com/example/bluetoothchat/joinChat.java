@@ -178,6 +178,7 @@ public class joinChat extends Activity {
 			
 			@Override
 			public void onClick(View v) {
+				System.out.println("sending "+input.getText().toString());
 				connectedThread.write(input.getText().toString().getBytes());		
 			}
 		});
@@ -211,7 +212,7 @@ private class ConnectedThread extends Thread {
 	    }
 	 
 	    public void run() {
-	        byte[] buffer = new byte[1024];  // buffer store for the stream
+	        final byte[] buffer = new byte[1024];  // buffer store for the stream
 	        int bytes; // bytes returned from read()
 	 
 	        // Keep listening to the InputStream until an exception occurs
@@ -222,7 +223,20 @@ private class ConnectedThread extends Thread {
 	                // Send the obtained bytes to the UI activity
 	                //mHandler.obtainMessage(MESSAGE_READ, bytes, -1, buffer).sendToTarget();
 	                
-	                mainChat.setText(mainChat.getText().toString()+"\n"+buffer);
+	                System.out.println("reading "+bytes+" bytes");
+	                
+	                Runnable r = new Runnable() {
+	                	public void run()
+	                	{
+	                		addToChat(buffer);
+	                	}
+	                };
+	                
+	                runOnUiThread(r);
+	                
+	              
+	                
+	                
 	                
 	                
 	            } catch (IOException e) {
@@ -249,6 +263,19 @@ private class ConnectedThread extends Thread {
 	        	e.printStackTrace();
 	        }
 	    }
+	}
+	
+	private void addToChat(byte[] buffer)
+	{
+		//System.out.println("Adding "+buffer+" to chat");
+		String str = "";
+		try {
+			str = new String(buffer, "UTF-8");
+			mainChat.setText(mainChat.getText().toString()+"\n"+str);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
 	}
 	
 }

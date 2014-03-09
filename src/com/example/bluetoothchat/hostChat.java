@@ -3,6 +3,7 @@ package com.example.bluetoothchat;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -23,12 +24,17 @@ import android.widget.TextView;
 
 public class hostChat extends Activity {
 	
-	private static final int MESSAGE_READ = 999;
 	AcceptThread acceptor;
 	ArrayList<BluetoothSocket> sockets = new ArrayList<BluetoothSocket>();
+	ArrayList<ConnectedThread> connections = new ArrayList<ConnectedThread>();
 	Context context;
 	String username;
 	TextView mainChat;
+	Button button;
+	EditText input;
+	
+	
+	
 	
 	
 	@Override
@@ -37,12 +43,28 @@ public class hostChat extends Activity {
         setContentView(R.layout.activity_chat);
         
         
-        username = getIntent().getExtras().getString("un");
+        //username = getIntent().getExtras().getString("un");
         context = this;
         mainChat = (TextView) findViewById(R.id.textView1);
+        button = (Button) findViewById(R.id.button1);
+        input = (EditText) findViewById(R.id.editText1);
         
         acceptor = new AcceptThread();
         acceptor.start();
+        
+        
+        
+        button.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				for (ConnectedThread ct : connections)
+				{
+					ct.write(input.getText().toString().getBytes());
+				}
+				
+			}
+		});
         
         
         
@@ -55,7 +77,7 @@ public class hostChat extends Activity {
 	    private final BluetoothServerSocket mmServerSocket;
 	    private BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 	    public AcceptThread() {
-	    	System.out.println("AcceptThread called");
+	    	System.out.println("AcceptThread was called");
 
 	        // Use a temporary object that is later assigned to mmServerSocket,
 	        // because mmServerSocket is final
@@ -103,29 +125,16 @@ public class hostChat extends Activity {
 		System.out.println("accepted socket! woo");
 		sockets.add(socket);
 		
+		final ConnectedThread ct = new ConnectedThread(socket);
+		ct.start();
+		
+		connections.add(ct);
+		
+		
+		
 		
 	}
-	
-	private class ListenSocketThread extends Thread {
-	    private BluetoothSocket socket;
-	    public ListenSocketThread(BluetoothSocket s) {
-	        socket = s;
-	    }
-	 
-	    public void run() {
-	        while (true)
-	        {
-	        	
-	        }
-	    }
-	 
-	    /** Will cancel the listening socket, and cause the thread to finish */
-	    public void cancel() {
-	        try {
-	            socket.close();
-	        } catch (IOException e) { }
-	    }
-	}
+
 	
 	
 	
@@ -155,7 +164,7 @@ public class hostChat extends Activity {
 	    }
 	 
 	    public void run() {
-	        byte[] buffer = new byte[1024];  // buffer store for the stream
+	        final byte[] buffer = new byte[1024];  // buffer store for the stream
 	        int bytes; // bytes returned from read()
 	 
 	        // Keep listening to the InputStream until an exception occurs
@@ -166,7 +175,24 @@ public class hostChat extends Activity {
 	                // Send the obtained bytes to the UI activity
 	                //mHandler.obtainMessage(MESSAGE_READ, bytes, -1, buffer).sendToTarget();
 	                
-	                mainChat.setText(mainChat.getText().toString()+"\n"+buffer);
+	                System.out.println("reading "+bytes+" bytes");
+	                
+	                
+	                
+	                
+	                Runnable r = new Runnable() {
+	                	public void run()
+	                	{
+	                		addToChat(buffer);
+	                		
+	                	}
+	                };
+	                
+	                runOnUiThread(r);
+	                forwardMessage(buffer, this);
+	              
+	                
+	                
 	                
 	                
 	            } catch (IOException e) {
@@ -195,7 +221,29 @@ public class hostChat extends Activity {
 	    }
 	}
 	
-
+	private void forwardMessage(byte[] buffer, ConnectedThread fromConnection)
+	{
+		for (ConnectedThread ct : connections)
+		{
+			if (ct != fromConnection)
+			{
+				ct.write(buffer);
+			}
+		}
+	}
+	
+	private void addToChat(byte[] buffer)
+	{
+		//System.out.println("Adding "+buffer+" to chat");
+		String str = "";
+		try {
+			str = new String(buffer, "UTF-8");
+			mainChat.setText(mainChat.getText().toString()+"\n"+str);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+	}
 	
 }
 
