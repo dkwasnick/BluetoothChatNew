@@ -8,10 +8,12 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -56,6 +58,8 @@ public class hostChat extends Activity {
         if (username != null)
         {
         	myName = username;
+        }else{
+        	myName = BluetoothAdapter.getDefaultAdapter().getName();
         }
         
         
@@ -111,6 +115,15 @@ public class hostChat extends Activity {
 	        while (true) {
 	            try {
 	                socket = mmServerSocket.accept();
+	                
+	                promptForConnection(socket);
+	                if (!socket.isConnected())
+	                {
+	                	socket = null;
+	                }
+	                
+	                
+	                
 	                System.out.println("BTCHAT: accepted connection!");
 	            } catch (IOException e) {
 	            	System.out.println("BTCHAT: socket could not accept");
@@ -131,6 +144,38 @@ public class hostChat extends Activity {
 	            mmServerSocket.close();
 	        } catch (IOException e) { }
 	    }
+	}
+	
+	private void promptForConnection(final BluetoothSocket socket)
+	{
+		DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+		    @Override
+		    public void onClick(DialogInterface dialog, int which) {
+		        switch (which){
+		        case DialogInterface.BUTTON_POSITIVE:
+		            //Yes button clicked
+		            break;
+
+		        case DialogInterface.BUTTON_NEGATIVE:
+		           	try {
+						socket.close();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+		            break;
+		        }
+		    }
+		    
+		};
+
+		String msg = "Allow "+socket.getRemoteDevice().getName()+" to join chat?";
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage(msg).setPositiveButton("Yes", dialogClickListener)
+		    .setNegativeButton("No", dialogClickListener).show();
+		
+		
+		
 	}
 	
 	private void manageConnectedSocket(BluetoothSocket socket)
@@ -209,6 +254,9 @@ public class hostChat extends Activity {
 	                
 	            } catch (Exception e) {
 	            	System.out.println("BTCHAT: Exception in reading");
+	            	
+	            	
+	            	
 	            	e.printStackTrace();
 	                break;
 	            }

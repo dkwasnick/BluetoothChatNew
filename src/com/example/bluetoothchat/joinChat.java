@@ -18,6 +18,8 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.Editable;
+import android.text.Spannable;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -53,6 +55,12 @@ public class joinChat extends Activity {
         context = this;
        
         username = getIntent().getStringExtra("un");
+        if (username != null)
+        {
+        	myName = username;
+        }else{
+        	myName = BluetoothAdapter.getDefaultAdapter().getName();
+        }
         
         
         listView = (ListView) findViewById(R.id.listView1);
@@ -310,5 +318,35 @@ private class ConnectedThread extends Thread {
 			e.printStackTrace();
 		}	
 	}
+	
+	private Spannable parseMarkup(String msg)
+	{
+		
+		boolean inBold = false;
+		int boldStart = -1;
+		int boldEnd = -1;
+		
+		for (int i=0; i<msg.length(); i++)
+		{
+			char c = msg.charAt(i);
+			if (c == '*')
+			{
+				if (inBold)
+				{
+					boldEnd = i;
+					inBold = false;
+				}else{
+					boldStart = i;
+					inBold = true;
+				}
+			}
+		}
+		
+		
+		
+		
+		return null;
+	}
+	
 	
 }
